@@ -4,6 +4,14 @@
  * @param {...string} fields - the properties paths to pick
  * @returns {object} - returns the new object
  */
-export const pick = (obj, ...fields) => {
 
+
+export const pick = (obj, ...fields) => {
+    const newObj = {};
+    for (const ind in fields) {
+        if (obj.hasOwnProperty(fields[ind])) {
+            newObj[fields[ind]] = obj[fields[ind]]    ;
+        }
+    }
+    return newObj; 
 };
