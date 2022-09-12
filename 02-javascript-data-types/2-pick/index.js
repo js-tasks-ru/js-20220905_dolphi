@@ -9,9 +9,9 @@
 export const pick = (obj, ...fields) => {
     const newObj = {};
     for (const ind in fields) {
-        if (obj.hasOwnProperty(fields[ind])) {
-            newObj[fields[ind]] = obj[fields[ind]]    ;
+        if (Object.hasOwn(obj, fields[ind])) {
+            newObj[fields[ind]] = obj[fields[ind]];
         }
     }
-    return newObj; 
+    return newObj;
 };

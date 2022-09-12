@@ -4,11 +4,22 @@
  * @param {...string} fields - the properties paths to omit
  * @returns {object} - returns the new object
  */
-export const omit = (obj, ...fields) => {
-    for (let ind in fields) {
-        if (obj.hasOwnProperty(fields[ind])) {
-            delete obj[fields[ind]];
+ export const omit = (obj, ...fields) => {
+    const newObj = {};
+    for (const key in obj) {
+        if (checkIfEquals(key, fields)) {
+            continue;
+        }
+        newObj[key] = obj[key];
+    }
+    return newObj; 
+};
+
+function checkIfEquals(key, fields) {
+    for (let prop of fields) {
+        if (prop === key) {
+            return true;
         }
     }
-    return obj; 
-};
+    return false;
+}
