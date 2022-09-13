@@ -9,7 +9,7 @@
 export const pick = (obj, ...fields) => {
     const newObj = {};
     for (const ind in fields) {
-        if (Object.hasOwn(obj, fields[ind])) {
+        if (fields[ind] in obj) {
             newObj[fields[ind]] = obj[fields[ind]];
         }
     }
