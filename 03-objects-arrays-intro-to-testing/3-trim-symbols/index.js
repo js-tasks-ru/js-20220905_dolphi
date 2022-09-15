@@ -9,13 +9,19 @@ export function trimSymbols(string, size) {
     if (!size) return "";
 
     let lastIndexes = [0];
-    let prevSymb = string[0];
+    let [prevSymb] = string;
     for (let i = 0; i < string.length; i++) {
-        if (string[i] != prevSymb) {
+        if (string[i] !== prevSymb) {
             prevSymb = string[i];
             lastIndexes.push(i);
         }
     }
     
-    return lastIndexes.reduce((result, Val) => ( (string[Val+1] != string[Val]) ? (result + string.slice(Val, Val+1)) : (result + string.slice(Val, Val+size))), "");
+    // const nextChar = string[val+1];
+    // const currentChar = string[val];
+    return lastIndexes.reduce((result, val) => ( 
+        (string[val+1] != string[val]) ? 
+        (result + string.slice(val, val+1)) : 
+        (result + string.slice(val, val+size))
+    ), "");
 }
