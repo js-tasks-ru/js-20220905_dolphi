@@ -17,11 +17,10 @@ export function trimSymbols(string, size) {
         }
     }
     
-    // const nextChar = string[val+1];
-    // const currentChar = string[val];
+
     return lastIndexes.reduce((result, val) => ( 
-        (string[val+1] != string[val]) ? 
-        (result + string.slice(val, val+1)) : 
-        (result + string.slice(val, val+size))
+        (string[val+1] === string[val]) ? 
+        (result + string.slice(val, val+size)) :
+        (result + string.slice(val, val+1)) 
     ), "");
 }
