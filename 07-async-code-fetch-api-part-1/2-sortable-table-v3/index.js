@@ -26,7 +26,9 @@ export default class SortableTable {
   }
 
   sortOnClient (id, order) {
+    const sortedData  = this.sortFields(id, order);
 
+    // this.subElements.body.innerHTML = this.getBodyTemplates(sortedData);
   }
 
   sortOnServer (id, order) {
@@ -132,7 +134,7 @@ export default class SortableTable {
 
     this.subElements.header.innerHTML = this.getHeaderTemplates(field, order);
 
-    this.subElements.body.innerHTML = `${this.getBodyTemplates(sortedData)}`
+    this.subElements.body.innerHTML = this.getBodyTemplates(sortedData);
 
     this.addEventListeners();
     this.onClickHandler = this.onClickHandler.bind(this);

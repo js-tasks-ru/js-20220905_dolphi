@@ -120,7 +120,7 @@ export default class SortableTable {
 
     this.subElements.header.innerHTML = this.getHeaderTemplates(field, order);
 
-    this.subElements.body.innerHTML = `${this.getBodyTemplates(sortedData)}`
+    this.subElements.body.innerHTML = this.getBodyTemplates(sortedData);
 
     this.addEventListeners();
     this.onClickHandler = this.onClickHandler.bind(this);
