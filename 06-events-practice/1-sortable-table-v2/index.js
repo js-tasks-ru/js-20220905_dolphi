@@ -1,6 +1,6 @@
 export default class SortableTable {
   element;
-  prevField = "title";
+  prevField = "";
 
   constructor(headersConfig, {
     data = [],
@@ -22,6 +22,7 @@ export default class SortableTable {
   }
 
   defaultSort() {
+    this.prevField = this.sorted.id;
     this.sort(this.sorted.id, this.sorted.order);
   }
 

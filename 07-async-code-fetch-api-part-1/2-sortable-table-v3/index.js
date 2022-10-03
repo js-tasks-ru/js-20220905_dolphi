@@ -4,14 +4,18 @@ const BACKEND_URL = 'https://course-js.javascript.ru';
 
 export default class SortableTable {
   element;
-  prevField = "title";
+  prevField = "";
 
   constructor(headersConfig, {
     data = [],
-    sorted = {}
+    sorted = {
+      id: "",
+      order: "asc"
+    }
   } = {}) {
     this.headerConfig = headersConfig;
     this.data = data;
+    this.sorted = sorted;
 
     this.render();
 
@@ -30,6 +34,7 @@ export default class SortableTable {
   }
 
   defaultSort() {
+    this.prevField = this.sorted.id;
     this.sort(this.sorted.id, this.sorted.order);
   }
 
@@ -54,7 +59,7 @@ export default class SortableTable {
     }
   }
 
-  getHeaderTemplates(field = "", order = "") {
+  getHeaderTemplates(field = "", order = "desc") {
     return [...this.headerConfig]
       .map(item => {
         return `
@@ -103,13 +108,9 @@ export default class SortableTable {
     <div data-element="productsContainer" class="products-list__container">
       <div class="sortable-table">
 
-        <div data-element="header" class="sortable-table__header sortable-table__row">
-          ${this.getHeaderTemplates()}
-        </div>
+        <div data-element="header" class="sortable-table__header sortable-table__row"></div>
 
-        <div data-element="body" class="sortable-table__body">
-          ${this.getBodyTemplates(this.data)}
-        </div>
+        <div data-element="body" class="sortable-table__body"></div>
 
       </div>
     </div>
