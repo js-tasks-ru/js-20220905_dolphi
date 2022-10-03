@@ -17,50 +17,47 @@ export default class SortableTable {
     this.subElements = this.getSubElements(element);
   }
 
-  get HeaderTemplates() {
-    return [...this.headerConfig]
+  getHeaderTemplates(field = "title", order = "asc") {
+    return this.headerConfig
       .map(item => {
-        return `      
+        return `
         <div class="sortable-table__cell" data-id="${item.id}" data-sortable="${item.sortable}">
           <span>${item.title}</span>
-          <span data-element="arrow" class="sortable-table__sort-arrow">
-            <span class="sort-arrow"></span>
-          </span>
-        </div>      
-        `; 
+          ${putArrows(item)}
+        </div>
+        `;
       })
       .join("");
+
+    function putArrows(item) {
+      if (item.id === field) {
+        return `
+        <span data-element="arrow" class="sortable-table__sort-arrow">
+          <span class="sort-arrow"></span>
+        </span>
+        `
+      }
+      return '';
+    }
   }
 
   getBodyTemplates(data) {
     const array = [];
 
-    const heads = [...this.headerConfig].map(item => (item.title));
+    data
+      .map(item => {
+        array.push(`<a href="/products/3d-ochki-epson-elpgs03" class="sortable-table__row">`);
+        for (const head of this.headerConfig) {
+          if ('template' in head) {
+            array.push(head.template(item.head));
+            continue;
+          } else if (item[head.id]) {
+            array.push(`<div class="sortable-table__cell">${item[head.id]}</div>`);
+          }
+        }
+        array.push(`</a>`);
+      });
 
-    for(let item of data) {
-      array.push(`<a href="/products/3d-ochki-epson-elpgs03" class="sortable-table__row">`);
-      if (heads.includes("Image")) {
-        array.push(`
-        <div class="sortable-table__cell">
-          <img class="sortable-table-image" alt="Image" src="${item["images"][0]["url"]}">
-        </div>
-        `);
-      }
-      if (heads.includes("Name")) {
-        array.push(`<div class="sortable-table__cell">${item.title}</div>`);
-      }
-      if (heads.includes("Quantity")) {
-        array.push(`<div class="sortable-table__cell">${item.quantity}</div>`);
-      }
-      if (heads.includes("Price")) {
-        array.push(`<div class="sortable-table__cell">${item.price}</div>`);
-      }
-      if (heads.includes("Sales")) {
-        array.push(`<div class="sortable-table__cell">${item.sales}</div>`);
-      }
-      array.push(`</a>`);
-    }
-    // console.log(array.join(""));
     return array.join("");
   }
 
@@ -70,7 +67,7 @@ export default class SortableTable {
       <div class="sortable-table">
 
         <div data-element="header" class="sortable-table__header sortable-table__row">
-          ${this.HeaderTemplates}      
+          ${this.getHeaderTemplates()}
         </div>
 
         <div data-element="body" class="sortable-table__body">
@@ -82,9 +79,9 @@ export default class SortableTable {
     `
   }
 
-  remove() { 
+  remove() {
     if (this.element) {
-      this.element.remove();    
+      this.element.remove();
     }
   }
 
@@ -96,13 +93,15 @@ export default class SortableTable {
   sort(field, order) {
     const sortedData  = this.sortFields(field, order);
     this.subElements.body.innerHTML = `${this.getBodyTemplates(sortedData)}`
- 
+
+    this.subElements.header.innerHTML = this.getHeaderTemplates(field, order);
+
   }
 
   sortFields(field, order) {
     if(!["asc", "desc"].includes(order)) return;
 
-    const arr = [...this.data]; 
+    const arr = [...this.data];
     const column = this.headerConfig.find(item => item.id === field);
     const {sortType} = column;
 
