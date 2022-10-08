@@ -14,6 +14,7 @@ describe('forms-fetch-api-part-2/product-form-v1', () => {
     const productId = 'some-id';
 
     productFormComponent = new ProductForm(productId);
+    console.log(productFormComponent)
 
     const element = await productFormComponent.render();
 
