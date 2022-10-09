@@ -30,35 +30,32 @@ export default class SortableTable {
       .join("");
 
     function putArrows(item) {
-      if (item.id === field) {
-        return `
+      return (item.id === field) ?  `
         <span data-element="arrow" class="sortable-table__sort-arrow">
           <span class="sort-arrow"></span>
         </span>
         `
-      }
-      return '';
+      : '';
     }
   }
 
   getBodyTemplates(data) {
-    const array = [];
-
-    data
+    return data
       .map(item => {
-        array.push(`<a href="/products/3d-ochki-epson-elpgs03" class="sortable-table__row">`);
+        let str = "";
+        str += `<a href="/products/3d-ochki-epson-elpgs03" class="sortable-table__row">`;
         for (const head of this.headerConfig) {
           if ('template' in head) {
-            array.push(head.template(item.head));
+            str += head.template(item.head);
             continue;
           } else if (item[head.id]) {
-            array.push(`<div class="sortable-table__cell">${item[head.id]}</div>`);
+            str += `<div class="sortable-table__cell">${item[head.id]}</div>`;
           }
         }
-        array.push(`</a>`);
-      });
-
-    return array.join("");
+        str += `</a>`;
+        return str;
+      })
+      .join("");
   }
 
   get template() {
@@ -92,7 +89,7 @@ export default class SortableTable {
 
   sort(field, order) {
     const sortedData  = this.sortFields(field, order);
-    this.subElements.body.innerHTML = `${this.getBodyTemplates(sortedData)}`
+    this.subElements.body.innerHTML = this.getBodyTemplates(sortedData);
 
     this.subElements.header.innerHTML = this.getHeaderTemplates(field, order);
 
@@ -118,7 +115,7 @@ export default class SortableTable {
         case 'string':
           return direction * elem1[field].localeCompare(elem2[field], ['ru', 'en']);
         default:
-          throw new Error('Unknown type ${SortType}');
+          throw new Error('Unknown type');
       }
     })
   }
