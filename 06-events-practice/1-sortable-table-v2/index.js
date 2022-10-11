@@ -34,14 +34,9 @@ export default class SortableTable {
   }
 
   onClickHandler = event => {
-    const cell = event.target.closest('.sortable-table__cell');
+    const cell = event.target.closest('.sortable-list__item');
 
     if (!cell) return;
-
-
-    // if (cell.getAttribute("data-sortable")) {
-      //   this.sort(cell.getAttribute("data-id"), cell.getAttribute("data-order"));
-      // }
 
       const { id, order } = cell.dataset;
       const switchedOrder = switchOrder(order);

@@ -10,7 +10,6 @@ class Tooltip {
   }
 
   onPointerOver = (event) => {
-    console.log("here");
     const element = event.target.closest('[data-tooltip]');
     if (!element) return;
 
