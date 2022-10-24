@@ -5,7 +5,6 @@ export default class SortableList {
     placeHolder = null;
     shiftX = null;
     shiftY = null;
-    bounding = null;
 
     constructor( elements = { items: [] } = {} ) {
         this.items = elements.items;
@@ -35,7 +34,7 @@ export default class SortableList {
 
     initEventListeners() {
         this.controller = new AbortController();
-        document.body.addEventListener('pointerdown', this.onPointerdownHandler, { signal: this.controller.signal });
+        this.element.addEventListener('pointerdown', this.onPointerdownHandler, { signal: this.controller.signal });
     }
 
     onPointerdownHandler = event => {
@@ -46,18 +45,19 @@ export default class SortableList {
     checkIfDeleteElement(event) {
         const item = event.target.closest('[data-delete-handle]');
         if (item) {
+            event.preventDefault();
             item.closest('.sortable-list__item').remove();
         }
     }
 
     checkIfGrabElement(event) {
-        event.preventDefault();
         const item = event.target.closest('[data-grab-handle]');
         if (item) {
+            event.preventDefault();
             this.renderMovingElement(event);
 
-            window.addEventListener("pointermove", this.onElementMovement, { signal: this.controller.signal });
-            window.addEventListener("pointerup", this.onPoinerUp, { signal: this.controller.signal });
+            document.addEventListener("pointermove", this.onElementMovement, { signal: this.controller.signal });
+            document.addEventListener("pointerup", this.onPoinerUp, { signal: this.controller.signal });
         }
     }
 
@@ -70,20 +70,24 @@ export default class SortableList {
         const movingElement = document.createElement("div");
         movingElement.innerHTML = content;
         this.movingElement = movingElement.firstElementChild;
-        this.movingElement.classList.add("sortable-list__item.sortable-list__item_dragging");
-        this.movingElement.classList.add("sortable-list__placeholder")
+
+        this.movingElement.classList.add("sortable-list__item");
+        this.movingElement.classList.add("sortable-list__item_dragging");
+
+        this.movingElement.style.width = `${element.offsetWidth}px`;
+        this.movingElement.style.height = `${element.offsetHeight}px`;
+
         const sortableList = document.querySelector('.sortable-list');
         sortableList.append(this.movingElement);
 
         this.saveMouseCoordinates(event, element);
 
-        this.moveElement(event.pageX, event.pageY);
+        this.moveElement(event.clientX, event.clientY);
     }
 
     saveMouseCoordinates(event, element) {
         this.shiftX = event.clientX - element.getBoundingClientRect().left;
         this.shiftY = event.clientY - element.getBoundingClientRect().top;
-        this.bounding = this.movingElement.getBoundingClientRect();
     }
 
     renderPlaceHolder(element) {
@@ -97,15 +101,19 @@ export default class SortableList {
         this.placeHolder.classList.remove("sortable-list__placeholder");
         this.movingElement.outerHTML = null;
 
-        window.removeEventListener("pointermove", this.onElementMovement);
-        window.removeEventListener("pointerup", this.onPoinerUp);
-        this.shiftX = this.shiftY = this.bounding = null
-        this.currentDroppable = this.placeHolder = this.movingElement = null;
+        document.removeEventListener("pointermove", this.onElementMovement);
+        document.removeEventListener("pointerup", this.onPoinerUp);
+        this.shiftX = null;
+        this.shiftY = null;
+        this.bounding = null
+        this.currentDroppable = null;
+        this.placeHolder = null;
+        this.movingElement = null;
     }
 
     onElementMovement = event => {
 
-        this.moveElement(event.pageX, event.pageY);
+        this.moveElement(event.clientX, event.clientY);
 
         this.movingElement.style.display = "none";
         let elemBelow = document.elementFromPoint(event.clientX, event.clientY);
@@ -132,8 +140,8 @@ export default class SortableList {
     }
 
     moveElement(pageX, pageY) {
-        let left = pageX - this.bounding.left - this.shiftX;
-        let top = pageY - this.bounding.top - this.shiftY;
+        let left = pageX - this.shiftX;
+        let top = pageY - this.shiftY;
         this.movingElement.style.left = left +'px';
         this.movingElement.style.top = top + 'px';
     }
@@ -148,7 +156,7 @@ export default class SortableList {
         this.remove();
         this.element = null;
         this.controller.abort();
-        this.shiftX = this.shiftY = this.bounding = null
+        this.shiftX = this.shiftY = null
         this.currentDroppable = this.placeHolder = this.movingElement = null;
     }
 }

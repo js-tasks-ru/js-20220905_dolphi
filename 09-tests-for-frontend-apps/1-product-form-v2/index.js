@@ -85,8 +85,10 @@ export default class ProductForm {
 
     const items = images.map(({url, source}) => this.getImage(url, source));
     const sortableList = new SortableList({items});
+    // console.log(sortableList.element);
 
-    imageListContainer.innerHTML = sortableList.element.innerHTML;
+    imageListContainer.append(sortableList.element);
+    // imageListContainer.innerHTML = sortableList.element.innerHTML;
   }
 
   get getTemplate() {
